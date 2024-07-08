@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { CountryInput } from "@/types";
 import { useAddCountryMutation, useGetContinentsQuery } from "@/graphql/generated/schema";
 import { useRouter } from "next/router";
+import { client } from "@/graphql/client";
 
 function AddCountry() {
   const router = useRouter();
@@ -18,13 +19,15 @@ function AddCountry() {
     }).required('Continent is required')
   });
 
-  const { register, formState: { errors }, handleSubmit } = useForm<CountryInput>({resolver: yupResolver(schema)})
+  const { register, formState: { errors }, handleSubmit, reset } = useForm<CountryInput>({resolver: yupResolver(schema)})
 
   const onSubmit = (data: CountryInput) => {
     console.log(data)
-    addCountry({ variables: { data }}).then((r) => {
-      console.log('reload')
-      router.reload();
+    addCountry({ variables: { data }}).then(async (r) => {
+      reset();
+      await client.refetchQueries({
+        include: ["GetCountries"],
+      });
     });
   }
 
