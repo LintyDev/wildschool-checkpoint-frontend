@@ -14,7 +14,7 @@ function GetCountry({ code }: { code: string }) {
   return (
     <div className="country">
       <p className="country-flag-big">{data?.country.emoji}</p>
-      <p>{data?.country.name}</p>
+      <p>{data?.country.name} ({data?.country.code})</p>
       <p>{data?.country.continent?.name}</p>
     </div>
   )
